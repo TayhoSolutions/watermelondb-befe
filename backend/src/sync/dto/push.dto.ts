@@ -1,9 +1,15 @@
-import { IsObject, IsNotEmpty, ValidateNested } from "class-validator";
+import { IsDateString, IsNotEmpty, IsObject, ValidateNested } from "class-validator";
+
 import { Type } from "class-transformer";
 
 class TableChanges {
+    @IsNotEmpty({ each: true })
     created: any[];
+
+    @IsNotEmpty({ each: true })
     updated: any[];
+
+    @IsNotEmpty({ each: true })
     deleted: string[];
 }
 
@@ -23,4 +29,8 @@ export class PushDto {
     @ValidateNested()
     @Type(() => Changes)
     changes: Changes;
+
+    @IsNotEmpty()
+    // @IsDateString()
+    lastPulledAt: string;
 }

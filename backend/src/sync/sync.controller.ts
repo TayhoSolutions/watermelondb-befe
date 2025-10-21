@@ -12,14 +12,14 @@ export class SyncController {
     @Post("pull")
     @HttpCode(HttpStatus.OK)
     async pull(@Request() req, @Body() pullDto: PullDto) {
-        const userId = req.user.id;
-        return this.syncService.pullChanges(userId, pullDto.lastPulledAt);
+        const userId = "1"; // req.user.id;
+        return this.syncService.pullChanges(userId, pullDto.lastPulledAt, pullDto.schemaVersion, pullDto.migration);
     }
 
     @Post("push")
     @HttpCode(HttpStatus.OK)
     async push(@Request() req, @Body() pushDto: PushDto) {
-        const userId = req.user.id;
+        const userId = "1"; // req.user.id;
         await this.syncService.pushChanges(userId, pushDto.changes);
         return { success: true };
     }

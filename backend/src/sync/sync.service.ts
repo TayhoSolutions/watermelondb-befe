@@ -28,9 +28,24 @@ export class SyncService {
 
     /**
      * Pull changes from server since lastPulledAt timestamp
+     * @param userId - User ID
+     * @param lastPulledAt - Timestamp of last pull
+     * @param schemaVersion - Client's schema version
+     * @param migration - Optional migration sync state
      */
-    async pullChanges(userId: string, lastPulledAt: number): Promise<SyncPullResponse> {
+    async pullChanges(
+        userId: string,
+        lastPulledAt: number,
+        schemaVersion: number,
+        migration?: any
+    ): Promise<SyncPullResponse> {
         const timestamp = Date.now();
+
+        // TODO: Handle schema migrations
+        // If client's schemaVersion is different from server's current schema version,
+        // you might need to transform data or reject the sync
+        // For now, we log it for debugging
+        console.log(`Pull request - Schema version: ${schemaVersion}, Migration:`, migration);
 
         // Fetch projects changed after lastPulledAt
         const projects = await this.prisma.project.findMany({

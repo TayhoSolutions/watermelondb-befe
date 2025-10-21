@@ -1,0 +1,30 @@
+{
+  "name": "mobile",
+  "version": "1.0.0",
+  "main": "expo-router/entry",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
+    "web": "expo start --web"
+  },
+  "dependencies": {
+    "@babel/plugin-proposal-decorators": "^7.28.0",
+    "@nozbe/watermelondb": "^0.28.0",
+    "@nozbe/with-observables": "^1.6.0",
+    "expo": "~54.0.13",
+    "expo-linking": "~8.0.8",
+    "expo-router": "6.0.12",
+    "expo-sqlite": "~16.0.8",
+    "expo-status-bar": "~3.0.8",
+    "react": "^19.1.0",
+    "react-native": "0.81.4",
+    "react-native-safe-area-context": "~5.6.0",
+    "react-native-screens": "~4.17.1"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.10",
+    "typescript": "~5.9.2"
+  },
+  "private": true
+}

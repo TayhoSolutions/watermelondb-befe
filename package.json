@@ -1,0 +1,27 @@
+{
+  "name": "watermelondb-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "React Native Expo App with WatermelonDB - Monorepo Structure",
+  "scripts": {
+    "mobile": "cd mobile && npm start",
+    "mobile:android": "cd mobile && npm run android",
+    "mobile:ios": "cd mobile && npm run ios",
+    "mobile:web": "cd mobile && npm run web",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
+    "backend": "cd backend && npm run start:dev",
+    "backend:build": "cd backend && npm run build",
+    "backend:start": "cd backend && npm start",
+    "backend:prod": "cd backend && npm run start:prod",
+    "install:all": "npm install && cd mobile && npm install && cd ../backend && npm install"
+  },
+  "keywords": [
+    "watermelondb",
+    "expo",
+    "react-native",
+    "monorepo"
+  ],
+  "author": "",
+  "license": "ISC"
+}

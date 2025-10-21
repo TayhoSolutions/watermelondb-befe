@@ -1,9 +1,10 @@
 import { Injectable, UnauthorizedException } from "@nestjs/common";
-import { JwtService } from "@nestjs/jwt";
+
 import { ConfigService } from "@nestjs/config";
-import { UsersService } from "../users/users.service";
+import { JwtService } from "@nestjs/jwt";
 import { LoginDto } from "./dto/login.dto";
 import { RegisterDto } from "./dto/register.dto";
+import { UsersService } from "../users/users.service";
 
 export interface JwtPayload {
     sub: string;
@@ -90,11 +91,11 @@ export class AuthService {
         const [accessToken, refreshToken] = await Promise.all([
             this.jwtService.signAsync(payload, {
                 secret: this.configService.get<string>("JWT_SECRET"),
-                expiresIn: this.configService.get<string>("JWT_EXPIRES_IN", "15m"),
+                expiresIn: this.configService.get("JWT_EXPIRES_IN") || "15m",
             }),
             this.jwtService.signAsync(payload, {
                 secret: this.configService.get<string>("JWT_REFRESH_SECRET"),
-                expiresIn: this.configService.get<string>("JWT_REFRESH_EXPIRES_IN", "7d"),
+                expiresIn: this.configService.get("JWT_REFRESH_EXPIRES_IN") || "7d",
             }),
         ]);
 

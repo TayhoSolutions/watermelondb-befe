@@ -1,14 +1,13 @@
-import { Module } from "@nestjs/common";
-import { ConfigModule } from "@nestjs/config";
-import { CacheModule } from "@nestjs/cache-manager";
-import KeyvRedis from "@keyv/redis";
-
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
-import { PrismaModule } from "./prisma/prisma.module";
 import { AuthModule } from "./auth/auth.module";
-import { UsersModule } from "./users/users.module";
+import { CacheModule } from "@nestjs/cache-manager";
+import { ConfigModule } from "@nestjs/config";
+import KeyvRedis from "@keyv/redis";
+import { Module } from "@nestjs/common";
+import { PrismaModule } from "nestjs-prisma";
 import { SyncModule } from "./sync/sync.module";
+import { UsersModule } from "./users/users.module";
 
 @Module({
     imports: [
@@ -19,7 +18,9 @@ import { SyncModule } from "./sync/sync.module";
         }),
 
         // Prisma Database
-        PrismaModule,
+        PrismaModule.forRoot({
+            isGlobal: true,
+        }),
 
         // Redis Cache (cache-manager v6 with Keyv)
         CacheModule.registerAsync({

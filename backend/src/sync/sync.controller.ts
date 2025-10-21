@@ -5,7 +5,7 @@ import { PullDto } from "./dto/pull.dto";
 import { PushDto } from "./dto/push.dto";
 
 @Controller("sync")
-@UseGuards(JwtAuthGuard)
+// @UseGuards(JwtAuthGuard)
 export class SyncController {
     constructor(private readonly syncService: SyncService) {}
 

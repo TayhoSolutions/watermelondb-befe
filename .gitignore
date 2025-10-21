@@ -47,3 +47,4 @@ android/build/
 *.swo
 *~
 .tmp/
+web-nginx/nestjs.rb-dev.net.fullchain.crt

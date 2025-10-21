@@ -10,11 +10,16 @@
     "mobile:web": "cd mobile && npm run web",
     "android": "expo run:android",
     "ios": "expo run:ios",
-    "backend": "cd backend && npm run start:dev",
-    "backend:build": "cd backend && npm run build",
-    "backend:start": "cd backend && npm start",
-    "backend:prod": "cd backend && npm run start:prod",
-    "install:all": "npm install && cd mobile && npm install && cd ../backend && npm install"
+    "d:u": "docker compose --env-file .env.development -f compose.dev.yml up",
+    "d:ut": "docker compose --env-file .env.test -f compose.test.yml up",
+    "d:up": "docker compose -f compose.yml up",
+    "d:us": "docker compose -f ./stage/compose.stage.yml up",
+    "d:usssl": "docker compose -f ./stage/traefik/compose.yml up",
+    "d:uppma": "docker compose -f compose.stage.phpmyadmin.yml up",
+    "d:te2e": "docker exec backend npm run test:e2e",
+    "d:te2edebug": "docker exec backend npm run test:e2edebug",
+    "d:pm": "docker exec backend npm run prisma:migrate",
+    "d:pf": "docker exec backend npm run prisma:format"
   },
   "keywords": [
     "watermelondb",

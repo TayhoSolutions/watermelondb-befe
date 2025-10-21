@@ -1,0 +1,12 @@
+services:
+  frontend:
+    build:
+      context: ui/
+      target: builder
+    image: registry.renebedbur.de/rbedbur/eisenboard.app/eisenboard-ui:latest
+
+  backend:
+    build:
+      context: api/
+      target: builder
+    image: registry.renebedbur.de/rbedbur/eisenboard.app/eisenboard-api:latest

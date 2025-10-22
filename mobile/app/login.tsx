@@ -31,7 +31,7 @@ export default function LoginScreen() {
         setIsLoading(true);
         try {
             await login(email, password);
-            // Navigation happens automatically through auth state change
+            router.push("/profile");
         } catch (error: any) {
             Alert.alert("Login fehlgeschlagen", error.message || "Bitte überprüfe deine Zugangsdaten", [
                 { text: "OK" },
@@ -118,6 +118,16 @@ const styles = StyleSheet.create({
         flexGrow: 1,
         justifyContent: "center",
         padding: 20,
+    },
+    backButton: {
+        alignSelf: "flex-start",
+        padding: 8,
+        marginBottom: 16,
+    },
+    backButtonText: {
+        fontSize: 16,
+        color: "#007AFF",
+        fontWeight: "600",
     },
     header: {
         alignItems: "center",

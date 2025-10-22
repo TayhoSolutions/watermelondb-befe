@@ -1,9 +1,11 @@
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Alert } from "react-native";
 import { useAuth } from "../src/contexts/AuthContext";
+import { useRouter } from "expo-router";
 
 export default function ProfileScreen() {
     const { user, logout } = useAuth();
+    const router = useRouter();
 
     const handleLogout = () => {
         Alert.alert("Abmelden", "Möchtest du dich wirklich abmelden?", [
@@ -17,6 +19,7 @@ export default function ProfileScreen() {
                 onPress: async () => {
                     try {
                         await logout();
+                        router.push("/login");
                     } catch (error) {
                         Alert.alert("Fehler", "Abmeldung fehlgeschlagen");
                     }

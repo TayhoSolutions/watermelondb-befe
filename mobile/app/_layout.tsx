@@ -1,30 +1,30 @@
+import { ActivityIndicator, Text, View } from "react-native";
+import { AuthProvider, useAuth } from "../src/contexts/AuthContext";
 import React, { useEffect } from "react";
+import { Tabs, useRouter, useSegments } from "expo-router";
 
 import { DatabaseProvider } from "@nozbe/watermelondb/react";
-import { Tabs, useRouter, useSegments } from "expo-router";
-import { Text, ActivityIndicator, View } from "react-native";
 import { createSyncService } from "../src/sync";
 import { database } from "../src/database";
-import { AuthProvider, useAuth } from "../src/contexts/AuthContext";
 
 function RootLayoutNav() {
     const { isAuthenticated, isLoading } = useAuth();
     const segments = useSegments();
     const router = useRouter();
 
-    useEffect(() => {
-        if (isLoading) return;
+    // useEffect(() => {
+    //     if (isLoading) return;
 
-        const inAuthGroup = segments[0] === "login" || segments[0] === "register";
+    //     const inAuthGroup = segments[0] === "login" || segments[0] === "register";
 
-        if (!isAuthenticated && !inAuthGroup) {
-            // Redirect to login if not authenticated
-            router.replace("/login");
-        } else if (isAuthenticated && inAuthGroup) {
-            // Redirect to home if authenticated
-            router.replace("/");
-        }
-    }, [isAuthenticated, isLoading, segments]);
+    // if (!isAuthenticated && !inAuthGroup) {
+    //     // Redirect to login if not authenticated
+    //     router.replace("/login");
+    // } else if (isAuthenticated && inAuthGroup) {
+    //     // Redirect to home if authenticated
+    //     router.replace("/");
+    // }
+    // }, [isAuthenticated, isLoading, segments]);
 
     if (isLoading) {
         return (
@@ -42,7 +42,7 @@ function RootLayoutNav() {
                     title: "Projects",
                     tabBarLabel: "Projects",
                     tabBarIcon: () => <Text>📋</Text>,
-                    href: isAuthenticated ? undefined : null,
+                    // href: isAuthenticated ? undefined : null,
                 }}
             />
             <Tabs.Screen
@@ -51,7 +51,7 @@ function RootLayoutNav() {
                     title: "Sync Settings",
                     tabBarLabel: "Sync",
                     tabBarIcon: () => <Text>🔄</Text>,
-                    href: isAuthenticated ? undefined : null,
+                    // href: isAuthenticated ? undefined : null,
                 }}
             />
             <Tabs.Screen
@@ -73,8 +73,10 @@ function RootLayoutNav() {
             <Tabs.Screen
                 name="login"
                 options={{
-                    href: null,
                     title: "Login",
+                    tabBarLabel: "Login",
+                    tabBarIcon: () => <Text>👤</Text>,
+                    href: isAuthenticated ? null : undefined,
                 }}
             />
             <Tabs.Screen

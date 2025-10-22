@@ -1,8 +1,9 @@
+import { ConfigModule, ConfigService } from "@nestjs/config";
+
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { AuthModule } from "./auth/auth.module";
 import { CacheModule } from "@nestjs/cache-manager";
-import { ConfigModule } from "@nestjs/config";
 import KeyvRedis from "@keyv/redis";
 import { Module } from "@nestjs/common";
 import { PrismaModule } from "nestjs-prisma";
@@ -14,7 +15,7 @@ import { UsersModule } from "./users/users.module";
         // Configuration
         ConfigModule.forRoot({
             isGlobal: true,
-            envFilePath: ".env",
+            envFilePath: `.env.${process.env.NODE_ENV || "development"}`,
         }),
 
         // Prisma Database
@@ -25,11 +26,12 @@ import { UsersModule } from "./users/users.module";
         // Redis Cache (cache-manager v6 with Keyv)
         CacheModule.registerAsync({
             isGlobal: true,
-            useFactory: async () => {
-                const redisHost = process.env.REDIS_HOST || "localhost";
-                const redisPort = process.env.REDIS_PORT || "6379";
-                const redisPassword = process.env.REDIS_PASSWORD;
-                const redisDb = process.env.REDIS_DB || "0";
+            inject: [ConfigService],
+            useFactory: async (configService: ConfigService) => {
+                const redisHost = configService.get<string>("REDIS_HOST", "localhost");
+                const redisPort = configService.get<string>("REDIS_PORT", "6379");
+                const redisPassword = configService.get<string>("REDIS_PASSWORD");
+                const redisDb = configService.get<string>("REDIS_DB", "0");
 
                 // Build Redis connection URL for Keyv
                 const redisUrl = redisPassword

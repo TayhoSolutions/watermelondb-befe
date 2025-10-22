@@ -1,50 +1,4 @@
 services:
-    web:
-        image: nginx:1.27.3
-        container_name: watermeldondb-web
-        ports:
-            - 80:80
-            - 443:443
-        volumes:
-            - ./web-nginx/default.conf:/etc/nginx/conf.d/default.conf
-            - ./web-nginx/nginx.conf:/etc/nginx/nginx.conf
-            - ./web-nginx/nestjs.rb-dev.net.fullchain.crt:/etc/nginx/ssl/nestjs.rb-dev.net.fullchain.crt:ro
-            - ./web-nginx/nestjs.rb-dev.net.key:/etc/nginx/ssl/nestjs.rb-dev.net.key:ro
-        environment:
-            - NODE_ENV=${NODE_ENV}
-            - TZ=${TZ}
-        depends_on:
-            # - frontend
-            - backend
-        networks:
-            custom_network:
-                aliases:
-                    - watermelondb.nestjs.rb-dev.net
-
-    # frontend:
-    #     image: node:24-bookworm
-    #     container_name: watermelondb-frontend
-    #     # build:
-    #     #     context: ./ui
-    #     #     dockerfile: Dockerfile
-    #     volumes:
-    #         - ./ui:/app
-    #         - /app/node_modules
-    #     working_dir: /app
-    #     command: npm run dev
-    #     ports:
-    #         - 5173:5173
-    #     env_file: ./ui/.env.${NODE_ENV}
-    #     environment:
-    #         - NODE_ENV=${NODE_ENV}
-    #         - TZ=${TZ}
-    #     depends_on:
-    #         - backend
-    #     networks:
-    #         custom_network:
-    #             aliases:
-    #                 - watermelondb.nestjs.rb-dev.net
-
     backend:
         image: node:24-bookworm
         container_name: watermelondb-backend
@@ -65,7 +19,7 @@ services:
         networks:
             custom_network:
                 aliases:
-                    - watermelondb.nestjs.rb-dev.net
+                    - watermelondb.network
 
     redis:
         image: redis:8-alpine
@@ -77,7 +31,7 @@ services:
         networks:
             custom_network:
                 aliases:
-                    - watermelondb.nestjs.rb-dev.net
+                    - watermelondb.network
 
     mysql:
         image: mysql:9.4
@@ -93,7 +47,7 @@ services:
         networks:
             custom_network:
                 aliases:
-                    - watermelondb.nestjs.rb-dev.net
+                    - watermelondb.network
 
     phpmyadmin:
         image: phpmyadmin
@@ -107,19 +61,7 @@ services:
         networks:
             custom_network:
                 aliases:
-                    - watermelondb.nestjs.rb-dev.net
-
-    # mail:
-    #     image: mailhog/mailhog
-    #     container_name: watermelondb-mail
-    #     ports:
-    #         - 8025:8025
-    #     environment:
-    #         - TZ=${TZ}
-    #     networks:
-    #         custom_network:
-    #             aliases:
-    #                 - watermelondb.nestjs.rb-dev.net
+                    - watermelondb.network
 
 volumes:
     watermelondb-mysql:

@@ -23,7 +23,10 @@ export default function SyncSettingsScreen() {
 
         try {
             await sync();
-            Alert.alert("Erfolgreich", "Synchronisation erfolgreich abgeschlossen!", [{ text: "OK" }]);
+            // Nur Erfolgsmeldung anzeigen, wenn kein error im State gesetzt wurde
+            if (!error) {
+                Alert.alert("Erfolgreich", "Synchronisation erfolgreich abgeschlossen!", [{ text: "OK" }]);
+            }
         } catch (err) {
             Alert.alert("Fehler", "Synchronisation fehlgeschlagen. Bitte versuche es erneut.", [{ text: "OK" }]);
         }

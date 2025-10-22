@@ -1,6 +1,7 @@
-import { useEffect, useState, useCallback } from "react";
-import { useDatabase } from "@nozbe/watermelondb/react";
 import { createSyncService, getSyncService } from "./syncService";
+import { useCallback, useEffect, useState } from "react";
+
+import { useDatabase } from "@nozbe/watermelondb/react";
 
 /**
  * React Hook for syncing with the backend
@@ -48,6 +49,7 @@ export const useSync = (options?: { syncOnMount?: boolean; authToken?: string })
             const error = err instanceof Error ? err : new Error("Unknown sync error");
             setError(error);
             console.error("Sync error in hook:", error);
+            throw error; // Re-throw to let caller handle it
         } finally {
             setIsSyncing(false);
         }

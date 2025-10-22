@@ -2,6 +2,7 @@ import { SyncDatabaseChangeSet, SyncPullResult, synchronize } from "@nozbe/water
 
 import { Database } from "@nozbe/watermelondb";
 import { ENDPOINTS } from "../config/api";
+import { authService } from "../services/authService";
 
 // Type definitions for sync
 interface SyncPullArgs {
@@ -48,6 +49,51 @@ export class SyncService {
      */
     getIsSyncing(): boolean {
         return this.isSyncing;
+    }
+
+    /**
+     * Helper method to make authenticated fetch requests with automatic token refresh
+     * @param url - The URL to fetch
+     * @param options - Fetch options
+     * @param isRetry - Internal flag to prevent infinite retry loops
+     */
+    private async authenticatedFetch(url: string, options: RequestInit, isRetry: boolean = false): Promise<Response> {
+        const response = await fetch(url, options);
+
+        // If we get a 401 Unauthorized and haven't already retried
+        if (response.status === 401 && !isRetry) {
+            console.log("🔄 Access token expired, attempting to refresh...");
+
+            try {
+                // Try to refresh the token
+                const newToken = await authService.refreshAccessToken();
+
+                if (newToken) {
+                    console.log("✅ Token refreshed successfully");
+                    // Update the token in the service
+                    this.authToken = newToken;
+
+                    // Retry the request with the new token
+                    const newOptions = {
+                        ...options,
+                        headers: {
+                            ...options.headers,
+                            Authorization: `Bearer ${newToken}`,
+                        },
+                    };
+
+                    return this.authenticatedFetch(url, newOptions, true);
+                } else {
+                    console.error("❌ Token refresh failed, user needs to login again");
+                    throw new Error("Session expired. Please login again.");
+                }
+            } catch (error) {
+                console.error("❌ Error during token refresh:", error);
+                throw new Error("Session expired. Please login again.");
+            }
+        }
+
+        return response;
     }
 
     /**
@@ -113,7 +159,7 @@ export class SyncService {
         });
 
         try {
-            const response = await fetch(ENDPOINTS.SYNC_PULL, {
+            const response = await this.authenticatedFetch(ENDPOINTS.SYNC_PULL, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -171,7 +217,7 @@ export class SyncService {
         });
 
         try {
-            const response = await fetch(ENDPOINTS.SYNC_PUSH, {
+            const response = await this.authenticatedFetch(ENDPOINTS.SYNC_PUSH, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

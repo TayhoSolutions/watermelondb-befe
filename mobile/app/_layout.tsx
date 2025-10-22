@@ -1,7 +1,7 @@
 import { ActivityIndicator, Text, View } from "react-native";
 import { AuthProvider, useAuth } from "../src/contexts/AuthContext";
 import React, { useEffect } from "react";
-import { Tabs, useRouter, useSegments } from "expo-router";
+import { Tabs } from "expo-router";
 
 import { DatabaseProvider } from "@nozbe/watermelondb/react";
 import { createSyncService } from "../src/sync";
@@ -9,22 +9,6 @@ import { database } from "../src/database";
 
 function RootLayoutNav() {
     const { isAuthenticated, isLoading } = useAuth();
-    const segments = useSegments();
-    const router = useRouter();
-
-    // useEffect(() => {
-    //     if (isLoading) return;
-
-    //     const inAuthGroup = segments[0] === "login" || segments[0] === "register";
-
-    // if (!isAuthenticated && !inAuthGroup) {
-    //     // Redirect to login if not authenticated
-    //     router.replace("/login");
-    // } else if (isAuthenticated && inAuthGroup) {
-    //     // Redirect to home if authenticated
-    //     router.replace("/");
-    // }
-    // }, [isAuthenticated, isLoading, segments]);
 
     if (isLoading) {
         return (

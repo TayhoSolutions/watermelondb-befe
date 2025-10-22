@@ -1,19 +1,24 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Text, View } from "react-native";
+import { switchMap } from "rxjs/operators";
+import { of } from "rxjs";
+import { Q } from "@nozbe/watermelondb";
 
 import AddTaskForm from "../src/components/AddTaskForm";
 import Project from "../src/model/Project";
+import Task from "../src/model/Task";
 import TaskList from "../src/components/TaskList";
 import { database } from "../src/database";
 import { styles } from "../src/theme/styles";
 import { useLocalSearchParams } from "expo-router";
 import withObservables from "@nozbe/with-observables";
 
-interface ProjectDetailProps {
+interface ProjectDetailInnerProps {
     project: Project | null;
+    tasks: Task[];
 }
 
-const ProjectDetailScreen: React.FC<ProjectDetailProps> = ({ project }) => {
+const ProjectDetailScreen: React.FC<ProjectDetailInnerProps> = ({ project, tasks }) => {
     if (!project) {
         return (
             <View style={styles.container}>
@@ -29,14 +34,19 @@ const ProjectDetailScreen: React.FC<ProjectDetailProps> = ({ project }) => {
                 {project.description ? <Text style={styles.description}>{project.description}</Text> : null}
             </View>
             <AddTaskForm projectId={project.id} />
-            <TaskList tasks={project.tasks} />
+            <TaskList tasks={tasks} />
         </View>
     );
 };
 
-const enhance = withObservables(["id"], ({ id }: { id: string }) => ({
-    project: database.collections.get<Project>("projects").findAndObserve(id),
-}));
+const enhance = withObservables(["id"], ({ id }: { id: string }) => {
+    const projectObservable = database.collections.get<Project>("projects").findAndObserve(id);
+
+    return {
+        project: projectObservable,
+        tasks: database.collections.get<Task>("tasks").query(Q.where("project_id", id)).observe(),
+    };
+});
 
 const ProjectDetailScreenWrapper: React.FC = () => {
     const { id } = useLocalSearchParams();

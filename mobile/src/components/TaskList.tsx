@@ -10,32 +10,49 @@ interface TaskListProps {
     tasks: Task[];
 }
 
-const TaskList: React.FC<TaskListProps> = ({ tasks }) => {
-    const handleToggleTask = async (task: Task) => {
-        await task.update(() => {
-            task.isCompleted = !task.isCompleted;
+interface TaskItemProps {
+    task: Task;
+}
+
+const TaskItem: React.FC<TaskItemProps> = ({ task }) => {
+    const handleToggleTask = async () => {
+        await task.database.write(async () => {
+            await task.update((t) => {
+                t.isCompleted = !t.isCompleted;
+            });
         });
     };
 
-    const renderTask = ({ item }: { item: Task }) => (
+    return (
         <TouchableOpacity
-            style={[styles.card, item.isCompleted && { backgroundColor: colors.background }]}
-            onPress={() => handleToggleTask(item)}
+            style={[styles.card, task.isCompleted && { backgroundColor: colors.background }]}
+            onPress={handleToggleTask}
         >
             <Text
                 style={[
                     styles.title,
-                    item.isCompleted && {
+                    task.isCompleted && {
                         textDecorationLine: "line-through",
                         color: colors.gray,
                     },
                 ]}
             >
-                {item.title}
+                {task.title}
             </Text>
-            {item.description ? <Text style={styles.description}>{item.description}</Text> : null}
+            {task.description ? <Text style={styles.description}>{task.description}</Text> : null}
         </TouchableOpacity>
     );
+};
+
+// Make TaskItem reactive by observing the task
+const EnhancedTaskItem = withObservables(["task"], ({ task }: TaskItemProps) => ({
+    task: task.observe(),
+}));
+
+const ObservableTaskItem = EnhancedTaskItem(TaskItem);
+
+const TaskList: React.FC<TaskListProps> = ({ tasks }) => {
+    const renderTask = ({ item }: { item: Task }) => <ObservableTaskItem task={item} />;
 
     return (
         <FlatList
@@ -47,8 +64,4 @@ const TaskList: React.FC<TaskListProps> = ({ tasks }) => {
     );
 };
 
-const enhance = withObservables(["tasks"], ({ tasks }) => ({
-    tasks,
-}));
-
-export default enhance(TaskList);
+export default TaskList;

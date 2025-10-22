@@ -112,7 +112,9 @@ DATABASE_URL="mysql://root:your_password@localhost:3306/watermelondb"
 REDIS_HOST=localhost
 REDIS_PORT=6379
 
-# JWT Secrets (generate with: node -e "console.log(require('crypto').randomBytes(64).toString('base64'))")
+# JWT Secrets
+# generate with: node -e "console.log(require('crypto').randomBytes(48).toString('base64'))"
+# generate with openssl: openssl rand -base64 48
 JWT_SECRET=your-super-secret-jwt-key
 JWT_REFRESH_SECRET=your-super-secret-refresh-key
 ```

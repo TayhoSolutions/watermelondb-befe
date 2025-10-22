@@ -89,7 +89,7 @@ cd watermelondb
 
 ```bash
 # Backend
-cd ../backend && npm install
+cd backend && npm install
 
 # Mobile
 cd ../mobile && npm install

@@ -2,21 +2,21 @@ import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "rea
 
 import React from "react";
 import { useSync } from "../src/sync";
+import { useAuth } from "../src/contexts/AuthContext";
 
 /**
  * Sync Settings Screen
  * Zeigt Sync-Status und ermöglicht manuelles Synchronisieren
  */
 export default function SyncSettingsScreen() {
-    // TODO: JWT-Token sollte aus Auth-Context oder AsyncStorage kommen
-    const authToken = "null"; // Ersetze dies mit echtem Token
+    const { token, user } = useAuth();
 
     const { sync, isSyncing, lastSyncAt, error } = useSync({
-        authToken: authToken || undefined,
+        authToken: token || undefined,
     });
 
     const handleSync = async () => {
-        if (!authToken) {
+        if (!token) {
             Alert.alert("Nicht angemeldet", "Bitte melde dich an, um zu synchronisieren.", [{ text: "OK" }]);
             return;
         }
@@ -34,6 +34,7 @@ export default function SyncSettingsScreen() {
             <View style={styles.section}>
                 <Text style={styles.title}>Synchronisation</Text>
                 <Text style={styles.description}>Synchronisiere deine lokalen Daten mit dem Server.</Text>
+                {user && <Text style={styles.userInfo}>Angemeldet als: {user.email}</Text>}
             </View>
 
             <View style={styles.section}>
@@ -44,7 +45,7 @@ export default function SyncSettingsScreen() {
                             ? "🔄 Synchronisiert..."
                             : error
                             ? "❌ Fehler"
-                            : authToken
+                            : token
                             ? "✅ Bereit"
                             : "⚠️ Nicht angemeldet"}
                     </Text>
@@ -73,9 +74,9 @@ export default function SyncSettingsScreen() {
             </View>
 
             <TouchableOpacity
-                style={[styles.syncButton, (isSyncing || !authToken) && styles.syncButtonDisabled]}
+                style={[styles.syncButton, (isSyncing || !token) && styles.syncButtonDisabled]}
                 onPress={handleSync}
-                disabled={isSyncing || !authToken}
+                disabled={isSyncing || !token}
             >
                 <Text style={styles.syncButtonText}>
                     {isSyncing ? "🔄 Synchronisiert..." : "🔄 Jetzt synchronisieren"}
@@ -117,6 +118,11 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: "#666",
         lineHeight: 20,
+    },
+    userInfo: {
+        fontSize: 12,
+        color: "#007AFF",
+        marginTop: 8,
     },
     statusRow: {
         flexDirection: "row",

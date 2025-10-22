@@ -1,0 +1,344 @@
+### Pull changes - Initial sync (lastPulledAt = 0)
+POST http://localhost:3000/api/sync/pull
+Content-Type: application/json
+Authorization: Bearer YOUR_ACCESS_TOKEN_HERE
+
+{
+  "lastPulledAt": 0,
+  "schemaVersion": 1,
+  "migration": null
+}
+
+###
+
+### Pull changes - Incremental sync
+# Use timestamp from previous pull response
+POST http://localhost:3000/api/sync/pull
+Content-Type: application/json
+Authorization: Bearer YOUR_ACCESS_TOKEN_HERE
+
+{
+  "lastPulledAt": 1729584000000,
+  "schemaVersion": 1,
+  "migration": null
+}
+
+###
+
+### Pull changes - With migration
+POST http://localhost:3000/api/sync/pull
+Content-Type: application/json
+Authorization: Bearer YOUR_ACCESS_TOKEN_HERE
+
+{
+  "lastPulledAt": 0,
+  "schemaVersion": 2,
+  "migration": {
+    "from": 1,
+    "to": 2,
+    "tables": ["projects", "tasks"],
+    "columns": {
+      "projects": ["new_column"],
+      "tasks": ["updated_field"]
+    }
+  }
+}
+
+###
+
+### Push changes - Create new project
+POST http://localhost:3000/api/sync/push
+Content-Type: application/json
+Authorization: Bearer YOUR_ACCESS_TOKEN_HERE
+
+{
+  "changes": {
+    "projects": {
+      "created": [
+        {
+          "id": "project-1",
+          "name": "New Project",
+          "description": "Project description",
+          "created_at": 1729584000000,
+          "updated_at": 1729584000000
+        }
+      ],
+      "updated": [],
+      "deleted": []
+    },
+    "tasks": {
+      "created": [],
+      "updated": [],
+      "deleted": []
+    }
+  },
+  "lastPulledAt": 1729584000000
+}
+
+###
+
+### Push changes - Create and update
+POST http://localhost:3000/api/sync/push
+Content-Type: application/json
+Authorization: Bearer YOUR_ACCESS_TOKEN_HERE
+
+{
+  "changes": {
+    "projects": {
+      "created": [
+        {
+          "id": "project-2",
+          "name": "Another Project",
+          "description": "Another description",
+          "created_at": 1729584100000,
+          "updated_at": 1729584100000
+        }
+      ],
+      "updated": [
+        {
+          "id": "project-1",
+          "name": "Updated Project Name",
+          "description": "Updated description",
+          "created_at": 1729584000000,
+          "updated_at": 1729584200000
+        }
+      ],
+      "deleted": []
+    },
+    "tasks": {
+      "created": [
+        {
+          "id": "task-1",
+          "title": "New Task",
+          "description": "Task description",
+          "is_completed": false,
+          "project_id": "project-1",
+          "created_at": 1729584100000,
+          "updated_at": 1729584100000
+        }
+      ],
+      "updated": [],
+      "deleted": []
+    }
+  },
+  "lastPulledAt": 1729584100000
+}
+
+###
+
+### Push changes - Delete project
+POST http://localhost:3000/api/sync/push
+Content-Type: application/json
+Authorization: Bearer YOUR_ACCESS_TOKEN_HERE
+
+{
+  "changes": {
+    "projects": {
+      "created": [],
+      "updated": [],
+      "deleted": ["project-2"]
+    },
+    "tasks": {
+      "created": [],
+      "updated": [],
+      "deleted": []
+    }
+  },
+  "lastPulledAt": 1729584300000
+}
+
+###
+
+### Push changes - Complex sync with all operations
+POST http://localhost:3000/api/sync/push
+Content-Type: application/json
+Authorization: Bearer YOUR_ACCESS_TOKEN_HERE
+
+{
+  "changes": {
+    "projects": {
+      "created": [
+        {
+          "id": "project-3",
+          "name": "Project Three",
+          "description": "Third project",
+          "created_at": 1729584400000,
+          "updated_at": 1729584400000
+        }
+      ],
+      "updated": [
+        {
+          "id": "project-1",
+          "name": "Project One Updated Again",
+          "description": "Latest update",
+          "created_at": 1729584000000,
+          "updated_at": 1729584400000
+        }
+      ],
+      "deleted": ["project-2"]
+    },
+    "tasks": {
+      "created": [
+        {
+          "id": "task-2",
+          "title": "Task Two",
+          "description": "Second task",
+          "is_completed": false,
+          "project_id": "project-3",
+          "created_at": 1729584400000,
+          "updated_at": 1729584400000
+        }
+      ],
+      "updated": [
+        {
+          "id": "task-1",
+          "title": "Task One Updated",
+          "description": "Updated task",
+          "is_completed": true,
+          "project_id": "project-1",
+          "created_at": 1729584100000,
+          "updated_at": 1729584400000
+        }
+      ],
+      "deleted": []
+    }
+  },
+  "lastPulledAt": 1729584400000
+}
+
+###
+
+### Complete Sync Flow Test
+# 1. First, login to get token
+POST http://localhost:3000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "password123"
+}
+
+###
+
+# 2. Initial pull (empty database)
+POST http://localhost:3000/api/sync/pull
+Content-Type: application/json
+Authorization: Bearer YOUR_ACCESS_TOKEN_HERE
+
+{
+  "lastPulledAt": 0,
+  "schemaVersion": 1,
+  "migration": null
+}
+
+###
+
+# 3. Push local changes
+POST http://localhost:3000/api/sync/push
+Content-Type: application/json
+Authorization: Bearer YOUR_ACCESS_TOKEN_HERE
+
+{
+  "changes": {
+    "projects": {
+      "created": [
+        {
+          "id": "local-project-1",
+          "name": "Local Project",
+          "description": "Created locally",
+          "created_at": 1729584500000,
+          "updated_at": 1729584500000
+        }
+      ],
+      "updated": [],
+      "deleted": []
+    },
+    "tasks": {
+      "created": [
+        {
+          "id": "local-task-1",
+          "title": "Local Task",
+          "description": "Task created locally",
+          "is_completed": false,
+          "project_id": "local-project-1",
+          "created_at": 1729584500000,
+          "updated_at": 1729584500000
+        }
+      ],
+      "updated": [],
+      "deleted": []
+    }
+  },
+  "lastPulledAt": 1729584500000
+}
+
+###
+
+# 4. Pull again to get server changes
+POST http://localhost:3000/api/sync/pull
+Content-Type: application/json
+Authorization: Bearer YOUR_ACCESS_TOKEN_HERE
+
+{
+  "lastPulledAt": 1729584500000,
+  "schemaVersion": 1,
+  "migration": null
+}
+
+###
+
+### Test Pull without authentication (should fail)
+POST http://localhost:3000/api/sync/pull
+Content-Type: application/json
+
+{
+  "lastPulledAt": 0,
+  "schemaVersion": 1,
+  "migration": null
+}
+
+###
+
+### Test Push without authentication (should fail)
+POST http://localhost:3000/api/sync/push
+Content-Type: application/json
+
+{
+  "changes": {
+    "projects": {
+      "created": [],
+      "updated": [],
+      "deleted": []
+    },
+    "tasks": {
+      "created": [],
+      "updated": [],
+      "deleted": []
+    }
+  },
+  "lastPulledAt": 0
+}
+
+###
+
+### Test Pull with invalid payload (missing required field)
+POST http://localhost:3000/api/sync/pull
+Content-Type: application/json
+Authorization: Bearer YOUR_ACCESS_TOKEN_HERE
+
+{
+  "schemaVersion": 1
+}
+
+###
+
+### Test Push with invalid payload (missing changes)
+POST http://localhost:3000/api/sync/push
+Content-Type: application/json
+Authorization: Bearer YOUR_ACCESS_TOKEN_HERE
+
+{
+  "lastPulledAt": 0
+}
+
+###

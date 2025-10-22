@@ -1,0 +1,150 @@
+### Register a new user
+# Expected Response:
+# {
+#   "accessToken": "eyJhbGciOiJIUzI1NiIs...",
+#   "refreshToken": "eyJhbGciOiJIUzI1NiIs...",
+#   "user": {
+#     "id": "cm6j3n4pa0000pn4n8eqj0kze",
+#     "email": "test@example.com",
+#     "name": "Test User",
+#     "createdAt": "2024-01-20T10:30:00.000Z",
+#     "updatedAt": "2024-01-20T10:30:00.000Z"
+#   }
+# }
+POST http://localhost:3000/api/auth/register
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "password123",
+  "name": "Test User"
+}
+
+###
+
+### Register without name (optional field)
+POST http://localhost:3000/api/auth/register
+Content-Type: application/json
+
+{
+  "email": "user2@example.com",
+  "password": "password123"
+}
+
+###
+
+### Register with invalid email (should fail)
+POST http://localhost:3000/api/auth/register
+Content-Type: application/json
+
+{
+  "email": "invalid-email",
+  "password": "password123",
+  "name": "Test User"
+}
+
+###
+
+### Register with short password (should fail)
+POST http://localhost:3000/api/auth/register
+Content-Type: application/json
+
+{
+  "email": "test3@example.com",
+  "password": "123",
+  "name": "Test User"
+}
+
+###
+
+### Login with registered user
+POST http://localhost:3000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "password123"
+}
+
+###
+
+### Login with wrong password (should fail)
+POST http://localhost:3000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "wrongpassword"
+}
+
+###
+
+### Login with non-existent user (should fail)
+POST http://localhost:3000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "nonexistent@example.com",
+  "password": "password123"
+}
+
+###
+
+### Refresh access token
+# First login to get tokens, then use the refresh token here
+POST http://localhost:3000/api/auth/refresh
+Content-Type: application/json
+Authorization: Bearer YOUR_REFRESH_TOKEN_HERE
+
+###
+
+### Logout (requires valid access token)
+# Replace YOUR_ACCESS_TOKEN with a valid token from login response
+POST http://localhost:3000/api/auth/logout
+Content-Type: application/json
+Authorization: Bearer YOUR_ACCESS_TOKEN_HERE
+
+###
+
+### Full Auth Flow Test
+# 1. Register
+POST http://localhost:3000/api/auth/register
+Content-Type: application/json
+
+{
+  "email": "flowtest@example.com",
+  "password": "password123",
+  "name": "Flow Test User"
+}
+
+###
+
+# 2. Login (copy accessToken from response)
+POST http://localhost:3000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "flowtest@example.com",
+  "password": "password123"
+}
+
+###
+
+# 3. Use the accessToken for protected routes
+# Replace YOUR_ACCESS_TOKEN with the token from step 2
+GET http://localhost:3000/api/users/me
+Authorization: Bearer YOUR_ACCESS_TOKEN_HERE
+
+###
+
+# 4. Refresh token (use refreshToken from step 2)
+POST http://localhost:3000/api/auth/refresh
+Authorization: Bearer YOUR_REFRESH_TOKEN_HERE
+
+###
+
+# 5. Logout
+POST http://localhost:3000/api/auth/logout
+Authorization: Bearer YOUR_ACCESS_TOKEN_HERE
+
+###

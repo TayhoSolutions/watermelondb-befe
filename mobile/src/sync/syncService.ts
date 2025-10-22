@@ -1,4 +1,5 @@
-import { synchronize, SyncDatabaseChangeSet, SyncPullResult } from "@nozbe/watermelondb/sync";
+import { SyncDatabaseChangeSet, SyncPullResult, synchronize } from "@nozbe/watermelondb/sync";
+
 import { Database } from "@nozbe/watermelondb";
 import { ENDPOINTS } from "../config/api";
 
@@ -107,7 +108,7 @@ export class SyncService {
         const { lastPulledAt, schemaVersion, migration } = args;
 
         console.log("📥 Pulling changes from server...", {
-            lastPulledAt: lastPulledAt ? new Date(lastPulledAt).toISOString() : "first sync",
+            lastPulledAt: lastPulledAt ? `${lastPulledAt} / ${new Date(lastPulledAt).toISOString()}` : "first sync",
             schemaVersion,
         });
 
@@ -133,7 +134,7 @@ export class SyncService {
             const result = await response.json();
 
             console.log("📥 Pull completed:", {
-                timestamp: new Date(result.timestamp).toISOString(),
+                timestamp: `${result.timestamp} / ${new Date(result.timestamp).toISOString()}`,
                 projectsCreated: result.changes.projects?.created?.length || 0,
                 projectsUpdated: result.changes.projects?.updated?.length || 0,
                 projectsDeleted: result.changes.projects?.deleted?.length || 0,

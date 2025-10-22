@@ -1,0 +1,11 @@
+### Health Check
+GET http://localhost:3000/api
+Accept: application/json
+
+###
+
+### Health Check Endpoint
+GET http://localhost:3000/api/health
+Accept: application/json
+
+###

@@ -1,0 +1,305 @@
+### ===================================
+### COMPLETE API TEST SUITE
+### WatermelonDB Sync Backend
+### ===================================
+
+### Environment Setup
+@baseUrl = http://localhost:3000/api
+@email = test@example.com
+@password = password123
+
+### ===================================
+### 1. HEALTH CHECKS
+### ===================================
+
+### Root endpoint
+GET {{baseUrl}}
+
+###
+
+### Health check
+GET {{baseUrl}}/health
+
+###
+
+### ===================================
+### 2. AUTHENTICATION FLOW
+### ===================================
+
+### 2.1 Register new user
+# @name register
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "{{email}}",
+  "password": "{{password}}",
+  "name": "Test User"
+}
+
+###
+
+### 2.2 Login
+# @name login
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{email}}",
+  "password": "{{password}}"
+}
+
+###
+
+### Extract tokens from login response
+@accessToken = {{login.response.body.accessToken}}
+@refreshToken = {{login.response.body.refreshToken}}
+@userId = {{login.response.body.user.id}}
+
+### ===================================
+### 3. USER MANAGEMENT
+### ===================================
+
+### 3.1 Get current user profile
+GET {{baseUrl}}/users/me
+Authorization: Bearer {{accessToken}}
+
+###
+
+### 3.2 Get all users
+GET {{baseUrl}}/users
+Authorization: Bearer {{accessToken}}
+
+###
+
+### 3.3 Get user by ID
+GET {{baseUrl}}/users/{{userId}}
+Authorization: Bearer {{accessToken}}
+
+###
+
+### 3.4 Update user
+PATCH {{baseUrl}}/users/{{userId}}
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "name": "Updated Test User"
+}
+
+###
+
+### ===================================
+### 4. SYNC OPERATIONS
+### ===================================
+
+### 4.1 Initial Pull (first sync)
+# @name initialPull
+POST {{baseUrl}}/sync/pull
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "lastPulledAt": 0,
+  "schemaVersion": 1,
+  "migration": null
+}
+
+###
+
+### Extract timestamp from pull response
+@lastPulledAt = {{initialPull.response.body.timestamp}}
+
+### 4.2 Push local changes (create project)
+POST {{baseUrl}}/sync/push
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "changes": {
+    "projects": {
+      "created": [
+        {
+          "id": "test-project-1",
+          "name": "Test Project",
+          "description": "Created via API test",
+          "created_at": {{$timestamp}},
+          "updated_at": {{$timestamp}}
+        }
+      ],
+      "updated": [],
+      "deleted": []
+    },
+    "tasks": {
+      "created": [
+        {
+          "id": "test-task-1",
+          "title": "Test Task",
+          "description": "Task for test project",
+          "is_completed": false,
+          "project_id": "test-project-1",
+          "created_at": {{$timestamp}},
+          "updated_at": {{$timestamp}}
+        }
+      ],
+      "updated": [],
+      "deleted": []
+    }
+  },
+  "lastPulledAt": {{lastPulledAt}}
+}
+
+###
+
+### 4.3 Pull changes after push
+# @name secondPull
+POST {{baseUrl}}/sync/pull
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "lastPulledAt": {{lastPulledAt}},
+  "schemaVersion": 1,
+  "migration": null
+}
+
+###
+
+### 4.4 Push update
+POST {{baseUrl}}/sync/push
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "changes": {
+    "projects": {
+      "created": [],
+      "updated": [
+        {
+          "id": "test-project-1",
+          "name": "Updated Test Project",
+          "description": "Updated via API test",
+          "created_at": {{$timestamp}},
+          "updated_at": {{$timestamp}}
+        }
+      ],
+      "deleted": []
+    },
+    "tasks": {
+      "created": [],
+      "updated": [
+        {
+          "id": "test-task-1",
+          "title": "Updated Test Task",
+          "description": "Task updated",
+          "is_completed": true,
+          "project_id": "test-project-1",
+          "created_at": {{$timestamp}},
+          "updated_at": {{$timestamp}}
+        }
+      ],
+      "deleted": []
+    }
+  },
+  "lastPulledAt": {{secondPull.response.body.timestamp}}
+}
+
+###
+
+### 4.5 Push delete
+POST {{baseUrl}}/sync/push
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "changes": {
+    "projects": {
+      "created": [],
+      "updated": [],
+      "deleted": ["test-project-1"]
+    },
+    "tasks": {
+      "created": [],
+      "updated": [],
+      "deleted": ["test-task-1"]
+    }
+  },
+  "lastPulledAt": {{$timestamp}}
+}
+
+###
+
+### ===================================
+### 5. TOKEN OPERATIONS
+### ===================================
+
+### 5.1 Refresh access token
+POST {{baseUrl}}/auth/refresh
+Authorization: Bearer {{refreshToken}}
+
+###
+
+### 5.2 Logout
+POST {{baseUrl}}/auth/logout
+Authorization: Bearer {{accessToken}}
+
+###
+
+### ===================================
+### 6. ERROR TESTS
+### ===================================
+
+### 6.1 Access protected route without token (should fail 401)
+GET {{baseUrl}}/users/me
+
+###
+
+### 6.2 Login with wrong password (should fail 401)
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{email}}",
+  "password": "wrongpassword"
+}
+
+###
+
+### 6.3 Register duplicate email (should fail 409)
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "{{email}}",
+  "password": "{{password}}",
+  "name": "Duplicate User"
+}
+
+###
+
+### 6.4 Invalid email format (should fail 400)
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "invalid-email",
+  "password": "{{password}}"
+}
+
+###
+
+### 6.5 Pull without auth (should fail 401)
+POST {{baseUrl}}/sync/pull
+Content-Type: application/json
+
+{
+  "lastPulledAt": 0,
+  "schemaVersion": 1,
+  "migration": null
+}
+
+###
+
+### ===================================
+### END OF TEST SUITE
+### ===================================

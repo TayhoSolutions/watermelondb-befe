@@ -38,3 +38,8 @@ lerna-debug.log*
 .env
 .env.local
 .env.production
+
+# HTTP Client
+.httpbook
+*.http.private
+tests/*.http.private

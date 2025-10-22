@@ -1,0 +1,127 @@
+### Create a new user (direct endpoint)
+POST http://localhost:3000/api/users
+Content-Type: application/json
+
+{
+  "email": "directuser@example.com",
+  "password": "password123",
+  "name": "Direct User"
+}
+
+###
+
+### Get all users (requires authentication)
+# Replace YOUR_ACCESS_TOKEN with a valid token
+GET http://localhost:3000/api/users
+Authorization: Bearer YOUR_ACCESS_TOKEN_HERE
+
+###
+
+### Get current user profile (requires authentication)
+# Replace YOUR_ACCESS_TOKEN with a valid token
+GET http://localhost:3000/api/users/me
+Authorization: Bearer YOUR_ACCESS_TOKEN_HERE
+
+###
+
+### Get user by ID (requires authentication)
+# Replace YOUR_ACCESS_TOKEN and USER_ID with valid values
+GET http://localhost:3000/api/users/USER_ID_HERE
+Authorization: Bearer YOUR_ACCESS_TOKEN_HERE
+
+###
+
+### Update user (requires authentication)
+# Replace YOUR_ACCESS_TOKEN and USER_ID with valid values
+PATCH http://localhost:3000/api/users/USER_ID_HERE
+Content-Type: application/json
+Authorization: Bearer YOUR_ACCESS_TOKEN_HERE
+
+{
+  "name": "Updated Name",
+  "email": "updated@example.com"
+}
+
+###
+
+### Update user - partial update (only name)
+PATCH http://localhost:3000/api/users/USER_ID_HERE
+Content-Type: application/json
+Authorization: Bearer YOUR_ACCESS_TOKEN_HERE
+
+{
+  "name": "New Name Only"
+}
+
+###
+
+### Delete user (requires authentication)
+# Replace YOUR_ACCESS_TOKEN and USER_ID with valid values
+DELETE http://localhost:3000/api/users/USER_ID_HERE
+Authorization: Bearer YOUR_ACCESS_TOKEN_HERE
+
+###
+
+### Complete User Flow
+# 1. Register user
+POST http://localhost:3000/api/auth/register
+Content-Type: application/json
+
+{
+  "email": "userflow@example.com",
+  "password": "password123",
+  "name": "User Flow Test"
+}
+
+###
+
+# 2. Login to get token
+POST http://localhost:3000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "userflow@example.com",
+  "password": "password123"
+}
+
+###
+
+# 3. Get own profile (use accessToken from login)
+GET http://localhost:3000/api/users/me
+Authorization: Bearer YOUR_ACCESS_TOKEN_HERE
+
+###
+
+# 4. Update profile
+PATCH http://localhost:3000/api/users/USER_ID_HERE
+Content-Type: application/json
+Authorization: Bearer YOUR_ACCESS_TOKEN_HERE
+
+{
+  "name": "Updated User Flow Name"
+}
+
+###
+
+# 5. Get all users
+GET http://localhost:3000/api/users
+Authorization: Bearer YOUR_ACCESS_TOKEN_HERE
+
+###
+
+# 6. Get specific user
+GET http://localhost:3000/api/users/USER_ID_HERE
+Authorization: Bearer YOUR_ACCESS_TOKEN_HERE
+
+###
+
+### Test without authentication (should fail with 401)
+GET http://localhost:3000/api/users/me
+
+###
+
+### Test with invalid token (should fail with 401)
+GET http://localhost:3000/api/users/me
+Authorization: Bearer invalid_token_here
+
+###

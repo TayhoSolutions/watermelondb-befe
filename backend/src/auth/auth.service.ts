@@ -4,16 +4,12 @@ import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
 import { LoginDto } from "./dto/login.dto";
 import { RegisterDto } from "./dto/register.dto";
+import { AuthResponseDto, RefreshTokenResponseDto } from "./dto/auth-response.dto";
 import { UsersService } from "../users/users.service";
 
 export interface JwtPayload {
     sub: string;
     email: string;
-}
-
-export interface AuthTokens {
-    accessToken: string;
-    refreshToken: string;
 }
 
 @Injectable()
@@ -41,7 +37,7 @@ export class AuthService {
         return result;
     }
 
-    async login(loginDto: LoginDto): Promise<AuthTokens> {
+    async login(loginDto: LoginDto): Promise<AuthResponseDto> {
         const user = await this.validateUser(loginDto.email, loginDto.password);
 
         if (!user) {
@@ -51,18 +47,36 @@ export class AuthService {
         const tokens = await this.generateTokens(user.id, user.email);
         await this.usersService.updateRefreshToken(user.id, tokens.refreshToken);
 
-        return tokens;
+        return {
+            ...tokens,
+            user: {
+                id: user.id,
+                email: user.email,
+                name: user.name,
+                createdAt: user.createdAt,
+                updatedAt: user.updatedAt,
+            },
+        };
     }
 
-    async register(registerDto: RegisterDto): Promise<AuthTokens> {
+    async register(registerDto: RegisterDto): Promise<AuthResponseDto> {
         const user = await this.usersService.create(registerDto);
         const tokens = await this.generateTokens(user.id, user.email);
         await this.usersService.updateRefreshToken(user.id, tokens.refreshToken);
 
-        return tokens;
+        return {
+            ...tokens,
+            user: {
+                id: user.id,
+                email: user.email,
+                name: user.name,
+                createdAt: user.createdAt,
+                updatedAt: user.updatedAt,
+            },
+        };
     }
 
-    async refreshTokens(userId: string, refreshToken: string): Promise<AuthTokens> {
+    async refreshTokens(userId: string, refreshToken: string): Promise<RefreshTokenResponseDto> {
         const user = await this.usersService.findOne(userId);
 
         if (!user || !user.refreshToken) {
@@ -85,7 +99,7 @@ export class AuthService {
         await this.usersService.updateRefreshToken(userId, null);
     }
 
-    private async generateTokens(userId: string, email: string): Promise<AuthTokens> {
+    private async generateTokens(userId: string, email: string): Promise<RefreshTokenResponseDto> {
         const payload: JwtPayload = { sub: userId, email };
 
         const [accessToken, refreshToken] = await Promise.all([

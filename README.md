@@ -48,7 +48,7 @@ A production-ready, offline-first full-stack application with React Native Expo 
 ### Backend API
 
 -   ✅ **JWT Authentication**: Access tokens (15min) + Refresh tokens (7 days)
--   ✅ **Secure Password Storage**: Argon2id hashing (memory-hard, GPU-resistant)
+-   ✅ **Secure Password Storage**: Argon2 hashing (memory-hard, GPU-resistant)
 -   ✅ **WatermelonDB Sync Protocol**: Official pull/push implementation
 -   ✅ **Soft Delete**: Records marked as deleted, not removed
 -   ✅ **Last-Write-Wins**: Simple conflict resolution strategy

@@ -12,120 +12,203 @@ A production-ready, offline-first full-stack application with React Native Expo 
 ### Mobile App
 
 ```bash
-# iOS Development Build
-npm run mobile:ios
+# Install dependencies
+cd mobile && npm install
 
-# Android Development Build
-npm run mobile:android
+# Start development server
+npm start
 
-# Development Server (nach Build)
-npm run mobile
+# Build and run on device
+npm run ios      # iOS
+npm run android  # Android
 ```
 
 ### Backend API
 
 ```bash
-# Alle Dependencies installieren
-npm run install:all
+# Start with Docker (recommended)
+docker compose up
 
-# Backend starten (MySQL & Redis müssen laufen!)
-npm run backend
+# Or start backend only (requires MySQL & Redis running)
+cd backend && npm install
+npm run start:dev
 ```
 
-## 📁 Projekt-Struktur
+## 📁 Project Structure
 
 ```
 watermelondb/
-├── mobile/                    # React Native Expo App
-│   ├── app/                  # Expo Router Screens
-│   │   ├── _layout.tsx       # Root Layout
-│   │   ├── index.tsx         # Home (Projects)
-│   │   └── project-detail.tsx
+├── mobile/                      # React Native Expo App
+│   ├── app/                    # Expo Router Screens
+│   │   ├── _layout.tsx         # Root Layout with Auth Protection
+│   │   ├── index.tsx           # Projects List (Home)
+│   │   ├── login.tsx           # Login Screen
+│   │   ├── register.tsx        # Registration Screen
+│   │   ├── profile.tsx         # User Profile & Settings
+│   │   ├── project-detail.tsx  # Project Details & Tasks
+│   │   └── sync-settings.tsx   # Sync Status & Debug Info
 │   ├── src/
-│   │   ├── components/       # UI Components
-│   │   ├── database/         # WatermelonDB Config
-│   │   ├── model/            # Database Models
-│   │   ├── services/         # Auth & Sync Services
-│   │   └── theme/            # Design System
+│   │   ├── api/                # API Client Configuration
+│   │   ├── components/         # Reusable UI Components
+│   │   ├── config/             # App Configuration
+│   │   ├── contexts/           # React Context Providers
+│   │   ├── database/           # WatermelonDB Configuration
+│   │   ├── model/              # WatermelonDB Models (User, Project, Task)
+│   │   ├── services/           # Auth & Sync Services
+│   │   ├── sync/               # WatermelonDB Sync Implementation
+│   │   ├── theme/              # Design Tokens & Styling
+│   │   └── types/              # TypeScript Type Definitions
 │   └── package.json
 │
-├── backend/                   # NestJS API Server
+├── backend/                     # NestJS API Server
+│   ├── prisma/
+│   │   ├── schema.prisma       # Database Schema (User, Project, Task)
+│   │   └── migrations/         # Database Migrations
 │   ├── src/
-│   │   ├── auth/             # JWT Authentication Module
-│   │   │   ├── strategies/   # Passport Strategies
-│   │   │   ├── guards/       # Auth Guards
-│   │   │   └── dto/          # DTOs
-│   │   ├── users/            # User Management Module
-│   │   ├── sync/             # WatermelonDB Sync Module
-│   │   ├── entities/         # TypeORM Entities
-│   │   ├── app.module.ts     # Root Module
-│   │   └── main.ts           # Entry Point
-│   ├── .env                  # Environment Config
+│   │   ├── auth/               # JWT Authentication Module
+│   │   │   ├── strategies/     # Passport Strategies (Local, JWT, Refresh)
+│   │   │   ├── guards/         # Auth Guards
+│   │   │   └── dto/            # Data Transfer Objects
+│   │   ├── users/              # User Management Module
+│   │   ├── sync/               # WatermelonDB Sync Module (Pull/Push)
+│   │   ├── config/             # Configuration Module
+│   │   ├── common/             # Shared Utilities
+│   │   ├── app.module.ts       # Root Module
+│   │   └── main.ts             # Application Entry Point
+│   ├── tests/                  # HTTP Tests & API Examples
 │   └── package.json
 │
-├── docker-compose.yml         # Docker Setup
-└── package.json              # Monorepo Root
+├── docker-compose.yml           # Docker Setup
+├── LICENSE                      # MIT License
+├── SECURITY.md                  # Security Policy
+└── package.json                # Monorepo Root
 ```
 
 ## 🛠 Tech Stack
 
 ### Mobile App
 
--   **Expo SDK 54** - React Native Framework
--   **WatermelonDB 0.28.0** - Offline-First Database
--   **Expo Router 6.0.12** - File-based Routing
--   **TypeScript 5.9.2** - Type Safety
+-   **React Native 0.81** - Cross-platform mobile framework
+-   **Expo SDK 54** - Development tooling and managed workflow
+-   **WatermelonDB 0.28** - High-performance reactive database built on SQLite
+-   **Expo Router 6.0** - File-based routing with type-safe navigation
+-   **TypeScript 5.9** - Static type checking
+-   **React 19** - UI library with latest features
+-   **AsyncStorage** - Persistent key-value storage for tokens
 
 ### Backend
 
--   **NestJS 10.3.0** - Progressive Node.js Framework
--   **TypeORM 0.3.19** - Database ORM
--   **MySQL 8.0** - Relational Database
--   **Redis 7** - Caching Layer
--   **Passport JWT** - Authentication
--   **Argon2** - Password Hashing
+-   **NestJS 11** - Progressive Node.js framework with TypeScript
+-   **Prisma 6.17** - Next-generation ORM with type safety
+-   **MySQL 8** - Relational database
+-   **Redis 5** - In-memory caching and session storage
+-   **Passport JWT** - Token-based authentication strategy
+-   **Argon2** - Memory-hard password hashing (OWASP recommended)
+-   **Swagger/OpenAPI** - Auto-generated API documentation
+-   **Class Validator** - DTO validation with decorators
 
-## 📱 Features
+## ✨ Features
 
-### Mobile
+### Mobile App
 
--   ✅ **Offline-First**: Alle Daten lokal mit SQLite
--   ✅ **Real-time Sync**: Bidirektionale Synchronisierung
--   ✅ **Type-Safe**: Vollständig in TypeScript
--   ✅ **Reactive UI**: Automatische Updates bei Datenänderungen
+-   ✅ **Offline-First Architecture**: Full app functionality without internet connection
+-   ✅ **Local SQLite Database**: All data stored locally with WatermelonDB
+-   ✅ **Bidirectional Sync**: Pull changes from server, push local changes
+-   ✅ **Reactive UI**: Automatic UI updates when data changes (no manual refresh)
+-   ✅ **Type-Safe**: Full TypeScript coverage with strict mode
+-   ✅ **Authentication**: JWT-based login/register with token persistence
+-   ✅ **Multi-User Support**: User-specific data isolation
+-   ✅ **Projects & Tasks**: Hierarchical data models with relations
+-   ✅ **Sync Status UI**: Visual sync state and debug information
+-   ✅ **Performance**: Lazy loading and optimized queries
 
-### Backend
+### Backend API
 
--   ✅ **JWT Authentication**: Access & Refresh Tokens
--   ✅ **Argon2 Hashing**: Sichere Passwort-Verschlüsselung
--   ✅ **RESTful API**: Standard HTTP Endpoints
--   ✅ **WatermelonDB Sync**: Pull/Push Mechanismus
--   ✅ **Redis Caching**: Performance-Optimierung
--   ✅ **Modular Architecture**: Auth, Users, Sync getrennt
+-   ✅ **JWT Authentication**: Access tokens (15min) + Refresh tokens (7 days)
+-   ✅ **Secure Password Storage**: Argon2id hashing (memory-hard, GPU-resistant)
+-   ✅ **WatermelonDB Sync Protocol**: Official pull/push implementation
+-   ✅ **Soft Delete**: Records marked as deleted, not removed
+-   ✅ **Last-Write-Wins**: Simple conflict resolution strategy
+-   ✅ **Redis Caching**: Session storage and performance optimization
+-   ✅ **Prisma ORM**: Type-safe database queries with migrations
+-   ✅ **RESTful API**: Standard HTTP endpoints with proper status codes
+-   ✅ **Modular Architecture**: Separate Auth, Users, and Sync modules
+-   ✅ **API Documentation**: Auto-generated Swagger UI
+-   ✅ **Input Validation**: DTO validation with class-validator
+-   ✅ **Database Indexing**: Optimized queries for sync operations
 
 ## 💻 Installation & Setup
 
-### 1. Voraussetzungen
+### Prerequisites
 
-**Erforderlich:**
+**Required:**
 
--   Node.js >= 18.x
+-   Node.js >= 20.x (LTS recommended)
 -   MySQL >= 8.0
--   Redis >= 6.0 (optional, aber empfohlen)
+-   Redis >= 5.0
+-   Docker & Docker Compose (optional, recommended)
 
-**macOS:**
+**For mobile development:**
+
+-   iOS: Xcode 15+ (macOS only)
+-   Android: Android Studio with SDK 34+
+
+### Quick Setup with Docker
 
 ```bash
-# Homebrew installieren (falls nicht vorhanden)
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+# 1. Clone the repository
+git clone https://github.com/TayhoSolutions/watermelondb.git
+cd watermelondb
 
-# MySQL & Redis
-brew install mysql redis
-brew services start mysql
-brew services start redis
+# 2. Start backend with Docker
+npm run d:u
+
+# Backend is now running at http://localhost:3000/api
 ```
 
-### 2. Datenbank erstellen
+### Manual Setup
+
+#### 1. Install Dependencies
+
+```bash
+# Backend
+cd backend && npm install
+
+# Mobile
+cd ../mobile && npm install
+```
+
+#### 2. Configure Backend
+
+```bash
+cd backend
+cp .env.example .env.development
+```
+
+Edit `.env.development` with your configuration:
+
+```bash
+# Database
+DATABASE_URL="mysql://root:your_password@localhost:3306/watermelondb"
+
+# Redis
+REDIS_HOST=localhost
+REDIS_PORT=6379
+
+# JWT Secrets (generate with: node -e "console.log(require('crypto').randomBytes(64).toString('base64'))")
+JWT_SECRET=your-super-secret-jwt-key
+JWT_REFRESH_SECRET=your-super-secret-refresh-key
+```
+
+#### 3. Setup Database
+
+**Using Docker:**
+
+```bash
+docker compose up mysql redis -d
+```
+
+**Manual MySQL setup:**
 
 ```bash
 mysql -u root -p
@@ -136,70 +219,91 @@ CREATE DATABASE watermelondb CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 EXIT;
 ```
 
-### 3. Dependencies installieren
-
-```bash
-# Alle Pakete installieren (Mobile + Backend)
-npm run install:all
-```
-
-### 4. Backend konfigurieren
+#### 4. Run Migrations
 
 ```bash
 cd backend
-cp .env.example .env
-# .env bearbeiten und Datenbank-Credentials eintragen
+npm run prisma:migrate
 ```
 
-Wichtig in `.env`:
+#### 5. Start Development
+
+**Backend:**
 
 ```bash
-DB_PASSWORD=dein_mysql_passwort
-JWT_SECRET=dein-geheimer-jwt-schluessel
-JWT_REFRESH_SECRET=dein-geheimer-refresh-schluessel
+cd backend
+npm run start:dev
 ```
 
-### 5. Backend starten
+Backend runs at: `http://localhost:3000/api`  
+API Documentation: `http://localhost:3000/api/docs`
+
+**Mobile:**
 
 ```bash
-npm run backend
+cd mobile
+npm start
+
+# In another terminal:
+npm run ios     # iOS
+npm run android # Android
 ```
 
-Backend läuft auf: `http://localhost:3000/api`
-
-### 6. Mobile App starten
-
-```bash
-npm run mobile:ios    # oder mobile:android
-```
-
-## 🎯 Entwicklung
+## 🎯 Development
 
 ### Backend Development
 
 ```bash
-# Development Mode mit Hot Reload
-npm run backend
+# Development mode with hot reload
+cd backend
+npm run start:dev
 
-# Production Build
-npm run backend:build
-npm run backend:prod
+# Production build
+npm run build
+npm run start:prod
 
-# Tests
-cd backend && npm test
+# Run tests
+npm test
+npm run test:e2e
+
+# Database operations
+npm run prisma:studio  # Open Prisma Studio
+npm run prisma:migrate # Run migrations
 ```
 
 ### Mobile Development
 
 ```bash
-# Metro Bundler starten
-npm run mobile
+cd mobile
 
-# iOS Development Build
-npm run mobile:ios
+# Start Metro bundler
+npm start
 
-# Android Development Build
-npm run mobile:android
+# Run on device
+npm run ios
+npm run android
+
+# Clear cache if needed
+npm start -- --clear
+```
+
+### Docker Commands
+
+```bash
+# Start all services
+docker compose up
+
+# Start in background
+docker compose up -d
+
+# View logs
+docker compose logs -f backend
+
+# Rebuild after changes
+docker compose up --build
+
+# Stop all services
+docker compose down
 ```
 
 ## 📚 Dokumentation
@@ -226,48 +330,63 @@ npm run mobile:android
 
 ## 🔐 API Endpoints
 
+Full API documentation available at: `http://localhost:3000/api/docs`
+
 ### Authentication
 
-```
-POST /api/auth/register   - Benutzer registrieren
-POST /api/auth/login      - Login
-POST /api/auth/refresh    - Token erneuern
-POST /api/auth/logout     - Logout
+```http
+POST   /api/auth/register    Register new user
+POST   /api/auth/login        Login with email/password
+POST   /api/auth/refresh      Refresh access token
+POST   /api/auth/logout       Logout and invalidate refresh token
 ```
 
 ### Users
 
-```
-GET  /api/users/me        - Eigenes Profil
-GET  /api/users/:id       - User Details
-PATCH /api/users/:id      - User aktualisieren
+```http
+GET    /api/users/me          Get current user profile
+GET    /api/users/:id         Get user by ID
+PATCH  /api/users/:id         Update user profile
+DELETE /api/users/:id         Delete user account
 ```
 
-### Sync
+### Sync (WatermelonDB Protocol)
 
+```http
+POST   /api/sync/pull         Pull changes since last sync
+POST   /api/sync/push         Push local changes to server
 ```
-POST /api/sync/pull       - Änderungen vom Server holen
-POST /api/sync/push       - Änderungen zum Server senden
+
+**Example Sync Pull Request:**
+
+```bash
+curl -X POST http://localhost:3000/api/sync/pull \
+  -H "Authorization: Bearer <token>" \
+  -H "Content-Type: application/json" \
+  -d '{"lastPulledAt": 0}'
 ```
 
 ## 🐳 Docker Setup
 
-Komplettes System mit einem Befehl starten:
+Start the complete system with one command:
 
 ```bash
-# Alles starten (Backend, MySQL, Redis)
-docker-compose up -d
+# Start all services (Backend, MySQL, Redis)
+docker compose up -d
 
-# Status prüfen
-docker-compose ps
+# Check status
+docker compose ps
 
-# Logs anschauen
-docker-compose logs -f backend
+# View logs
+docker compose logs -f backend
+
+# Stop all services
+docker compose down
 ```
 
-Siehe [DOCKER-DEPLOYMENT.md](./DOCKER-DEPLOYMENT.md) für Details.
+The backend will be available at `http://localhost:3000/api`
 
-## ✅ API Testen
+## ✅ Testing the API
 
 ### Health Check
 
@@ -275,7 +394,7 @@ Siehe [DOCKER-DEPLOYMENT.md](./DOCKER-DEPLOYMENT.md) für Details.
 curl http://localhost:3000/api/health
 ```
 
-### Registrieren
+### Register a User
 
 ```bash
 curl -X POST http://localhost:3000/api/auth/register \
@@ -298,61 +417,121 @@ curl -X POST http://localhost:3000/api/auth/login \
   }'
 ```
 
-## 🔧 Troubleshooting
-
-### Backend startet nicht
+### Use the API with Token
 
 ```bash
-# MySQL läuft?
+# Save the token from login response
+TOKEN="your_access_token_here"
+
+# Get user profile
+curl http://localhost:3000/api/users/me \
+  -H "Authorization: Bearer $TOKEN"
+```
+
+## 🔧 Troubleshooting
+
+### Backend Issues
+
+**Backend won't start:**
+
+```bash
+# Check if MySQL is running
 mysql -u root -p
 
-# Redis läuft?
+# Check if Redis is running
 redis-cli ping
 
-# Logs checken
+# Check logs
 cd backend && npm run start:dev
 ```
 
-### Mobile App Sync-Fehler
+**Database connection errors:**
 
--   Backend läuft? `curl http://localhost:3000/api/health`
--   Korrekte API URL? (iOS: localhost, Android: 10.0.2.2)
--   Access Token gültig?
+-   Verify `DATABASE_URL` in `.env`
+-   Ensure database exists: `CREATE DATABASE watermelondb;`
+-   Run migrations: `npm run prisma:migrate`
 
-Siehe auch:
+### Mobile App Issues
 
--   [BACKEND-SETUP.md](./BACKEND-SETUP.md#troubleshooting)
--   [MOBILE-SYNC-INTEGRATION.md](./MOBILE-SYNC-INTEGRATION.md#troubleshooting)
+**Sync errors:**
+
+-   Is backend running? `curl http://localhost:3000/api/health`
+-   Check API URL in `mobile/src/config/api.ts`
+    -   iOS Simulator: use `localhost`
+    -   Android Emulator: use `10.0.2.2`
+    -   Physical device: use computer's IP address
+-   Is access token valid? Check token expiration
+
+**Build failures:**
+
+```bash
+# Clear cache and reinstall
+cd mobile
+rm -rf node_modules ios android
+npm install
+npm run ios  # or android
+```
+
+**SQLite errors:**
+
+-   Delete app and reinstall (clears local database)
+-   Check WatermelonDB model definitions in `mobile/src/model/`
 
 ## 🚀 Production Deployment
 
-### Option 1: Docker
+### Backend Deployment
+
+**Docker (Recommended):**
 
 ```bash
-docker-compose -f docker-compose.yml up -d
+docker compose up -d
 ```
 
-### Option 2: Manual
+**Manual Deployment:**
 
-1. **Backend**: Build & Deploy zu Cloud (AWS, DigitalOcean, Heroku)
-2. **Database**: Managed MySQL (AWS RDS, DigitalOcean DBaaS)
-3. **Redis**: Managed Redis (AWS ElastiCache, Redis Cloud)
-4. **Mobile**: Expo EAS Build & Submit zu App Stores
+1. Build the application: `npm run build`
+2. Set production environment variables
+3. Use managed services:
+    - Database: AWS RDS, DigitalOcean Managed MySQL
+    - Redis: AWS ElastiCache, Redis Cloud
+    - Hosting: AWS EC2, DigitalOcean Droplets, Railway, Fly.io
 
-Siehe [DOCKER-DEPLOYMENT.md](./DOCKER-DEPLOYMENT.md) für Details.
+### Mobile App Deployment
 
-## 📊 Projekt-Status
+**Build for production:**
 
--   ✅ Mobile App mit WatermelonDB
--   ✅ NestJS Backend mit JWT Auth
--   ✅ MySQL Database mit TypeORM
--   ✅ Redis Caching
--   ✅ Sync Pull/Push Endpoints
--   ✅ Docker Setup
--   ✅ Comprehensive Documentation
--   🚧 Mobile Sync Integration (in Progress)
--   🚧 E2E Tests
--   🚧 CI/CD Pipeline
+```bash
+cd mobile
+
+# iOS
+npm run ios --variant release
+
+# Android
+npm run android --variant release
+```
+
+**App Store Submission:**
+
+-   Use Expo EAS Build for easier deployment
+-   Configure app signing certificates
+-   Submit to Apple App Store and Google Play Store
+-   Update API URLs in production build
+
+## 📊 Project Status
+
+-   ✅ Mobile App with WatermelonDB offline storage
+-   ✅ NestJS Backend with JWT authentication
+-   ✅ MySQL Database with Prisma ORM
+-   ✅ Redis caching layer
+-   ✅ WatermelonDB Sync (Pull/Push) fully implemented
+-   ✅ User authentication & authorization
+-   ✅ Projects & Tasks models with relations
+-   ✅ Docker development environment
+-   ✅ Comprehensive documentation
+-   ✅ MIT License & Security policy
+-   🚧 E2E tests
+-   🚧 CI/CD pipeline
+-   🚧 Production deployment guide
 
 ## 🤝 Contributing
 

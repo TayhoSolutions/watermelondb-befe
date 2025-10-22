@@ -9,6 +9,16 @@ A production-ready, offline-first full-stack application with React Native Expo 
 
 ## 🚀 Quick Start
 
+### Backend API
+
+```bash
+
+# Or start backend only (requires MySQL & Redis running)
+cd backend && npm install
+cd ..
+npm run d:u
+```
+
 ### Mobile App
 
 ```bash
@@ -21,17 +31,6 @@ npm start
 # Build and run on device
 npm run ios      # iOS
 npm run android  # Android
-```
-
-### Backend API
-
-```bash
-# Start with Docker (recommended)
-docker compose up
-
-# Or start backend only (requires MySQL & Redis running)
-cd backend && npm install
-npm run start:dev
 ```
 
 ## 📁 Project Structure

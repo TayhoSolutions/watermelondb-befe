@@ -14,8 +14,6 @@
     "d:ut": "docker compose --env-file .env.test -f compose.test.yml up",
     "d:up": "docker compose -f compose.yml up",
     "d:us": "docker compose -f ./stage/compose.stage.yml up",
-    "d:usssl": "docker compose -f ./stage/traefik/compose.yml up",
-    "d:uppma": "docker compose -f compose.stage.phpmyadmin.yml up",
     "d:te2e": "docker exec backend npm run test:e2e",
     "d:te2edebug": "docker exec backend npm run test:e2edebug",
     "d:pm": "docker exec backend npm run prisma:migrate",

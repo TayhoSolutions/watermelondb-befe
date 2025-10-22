@@ -1,6 +1,11 @@
 # WatermelonDB Full-Stack App - Monorepo
 
-React Native Expo App mit WatermelonDB und NestJS Backend für Synchronisierung.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue.svg)](https://www.typescriptlang.org/)
+[![NestJS](https://img.shields.io/badge/NestJS-11.x-red.svg)](https://nestjs.com/)
+[![Expo](https://img.shields.io/badge/Expo-54.x-blue.svg)](https://expo.dev/)
+
+A production-ready, offline-first full-stack application with React Native Expo mobile app and NestJS backend, featuring real-time bidirectional sync powered by WatermelonDB.
 
 ## 🚀 Quick Start
 
@@ -351,12 +356,49 @@ Siehe [DOCKER-DEPLOYMENT.md](./DOCKER-DEPLOYMENT.md) für Details.
 
 ## 🤝 Contributing
 
-Pull Requests sind willkommen! Für größere Änderungen bitte zuerst ein Issue erstellen.
+Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
 
-## 📄 Lizenz
+### Development Workflow
 
-MIT
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+### Code Style
+
+-   TypeScript for all code
+-   Follow existing code conventions
+-   Add tests for new features
+-   Update documentation as needed
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+### Third-Party Licenses
+
+This project uses the following open source packages:
+
+-   [WatermelonDB](https://github.com/Nozbe/WatermelonDB) - MIT License
+-   [NestJS](https://github.com/nestjs/nest) - MIT License
+-   [React Native](https://github.com/facebook/react-native) - MIT License
+-   [Expo](https://github.com/expo/expo) - MIT License
+-   [Prisma](https://github.com/prisma/prisma) - Apache 2.0 License
+
+## 🙏 Acknowledgments
+
+-   [WatermelonDB](https://watermelondb.dev) for the amazing offline-first database
+-   [NestJS](https://nestjs.com) for the powerful Node.js framework
+-   [Expo](https://expo.dev) for simplifying React Native development
+
+## 💬 Support
+
+-   📫 Open an issue for bug reports or feature requests
+-   ⭐ Star this repository if you find it helpful
+-   🔄 Share with others who might benefit
 
 ---
 
-**Happy Coding! 🎉**
+**Made with ❤️ using WatermelonDB, NestJS, and React Native**

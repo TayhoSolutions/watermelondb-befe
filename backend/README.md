@@ -13,7 +13,7 @@ NestJS v11 Backend mit JWT-Authentifizierung und WatermelonDB Synchronisierung.
 - ✅ **WatermelonDB Sync** - Pull/Push Synchronisierung für Mobile App
 - ✅ **Modulare Architektur** - Auth, Users, Sync Module getrennt
 
-## 📋 Voraussetzungen
+## 📋 Prerequisites
 
 - **Node.js >= 20.x** (v11 Requirement!)
 - MySQL >= 8.0
@@ -102,7 +102,7 @@ Alle Sync- und User-Endpoints benötigen einen JWT Access Token im Authorization
 Authorization: Bearer <access_token>
 ```
 
-### Registrierung
+### Registration
 
 ```bash
 curl -X POST http://localhost:3000/api/auth/register \
@@ -278,7 +278,7 @@ async function sync(database) {
 
 ## 📝 Hinweise
 
-- Prisma Migrations für Schema-Änderungen verwenden
+- Use Prisma Migrations for schema changes
 - JWT Secrets in `.env` ändern
 - CORS Origins in Production spezifizieren
 - Redis für bessere Performance nutzen

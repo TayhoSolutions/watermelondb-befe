@@ -1,6 +1,6 @@
-# WatermelonDB Backend - Architektur Übersicht
+# WatermelonDB Backend - Architecture Overview
 
-## 🏗️ System Architektur
+## 🏗️ System Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -47,19 +47,19 @@
     └──────────┘  └──────────┘  └──────────┘
 ```
 
-## 📦 Module Struktur
+## 📦 Module Structure
 
 ### 1. Auth Module
 
-**Verantwortlichkeiten:**
+**Responsibilities:**
 
--   Benutzer-Registrierung
+-   User Registration
 -   Login mit Email/Password (Passport Local Strategy)
 -   JWT Token Generation (Access + Refresh)
 -   Token Refresh
 -   Logout
 
-**Komponenten:**
+**Components:**
 
 ```
 auth/
@@ -90,14 +90,14 @@ auth/
 
 ### 2. Users Module
 
-**Verantwortlichkeiten:**
+**Responsibilities:**
 
 -   User CRUD Operations
 -   Password Management (Argon2)
 -   Profile Management
 -   Refresh Token Storage
 
-**Komponenten:**
+**Components:**
 
 ```
 users/
@@ -127,14 +127,14 @@ UserEntity {
 
 ### 3. Sync Module
 
-**Verantwortlichkeiten:**
+**Responsibilities:**
 
 -   WatermelonDB Pull/Push Sync
 -   Change Tracking
 -   Soft Delete Handling
 -   Conflict Resolution (Last Write Wins)
 
-**Komponenten:**
+**Components:**
 
 ```
 sync/
@@ -295,16 +295,16 @@ Mobile App                Backend                    Database
 ### Redis Caching Strategy
 
 ```typescript
-// Cache häufig abgerufene Daten
-- User Profile: 5 Minuten TTL
-- JWT Blacklist: Bis Token Expiry
-- Sync Metadata: 1 Minute TTL
+// Cache frequently accessed data
+- User Profile: 5 minutes TTL
+- JWT Blacklist: Until token expiry
+- Sync Metadata: 1 minute TTL
 ```
 
 ### Database Indexing
 
 ```sql
--- Performance-kritische Indices
+-- Performance-critical indices
 CREATE INDEX idx_projects_user_id ON projects(user_id);
 CREATE INDEX idx_projects_updated_at_ms ON projects(updated_at_ms);
 CREATE INDEX idx_tasks_user_id ON tasks(user_id);
@@ -312,12 +312,12 @@ CREATE INDEX idx_tasks_project_id ON tasks(project_id);
 CREATE INDEX idx_tasks_updated_at_ms ON tasks(updated_at_ms);
 ```
 
-### Query Optimierung
+### Query Optimization
 
--   **Pagination**: Limit/Offset für große Datensätze
--   **Batch Operations**: Bulk INSERT/UPDATE für Sync
+-   **Pagination**: Limit/Offset for large datasets
+-   **Batch Operations**: Bulk INSERT/UPDATE for sync
 -   **Connection Pooling**: TypeORM Connection Pool
--   **Lazy Loading**: Relations nur bei Bedarf laden
+-   **Lazy Loading**: Load relations only when needed
 
 ## 🔄 Deployment Pipeline
 
@@ -354,4 +354,4 @@ Development → Staging → Production
 
 ---
 
-**Diese Architektur ist skalierbar, sicher und production-ready! 🎯**
+**This architecture is scalable, secure, and production-ready! 🎯**

@@ -8,6 +8,7 @@
 An offline-first full-stack application with React Native Expo mobile app and NestJS backend, featuring real-time bidirectional sync powered by WatermelonDB.
 
 ⚠️ This is more of an Proof-Of-Concept to see if Mobile and Backend work together.
+
 ⚠️ Respecting Schema versioning and Migrations is not implemented. (https://watermelondb.dev/docs/Implementation/SyncImpl#migration-syncs)
 
 ## 🛠 Tech Stack
